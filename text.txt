@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Water Calc</title>
+manifest.json
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+<style>
+body{font-family:Arial;background:#f3f4f6;padding:20px;margin:0}
+.card{max-width:400px;margin:auto;background:#fff;padding:20px;border-radius:16px}
+input,button{width:100%;padding:10px;margin-top:8px}
+button{background:#2563eb;color:#fff}
+.outline{background:#fff;border:2px solid #ccc}
+.result{text-align:center;font-weight:bold;margin-top:10px}
+</style>
+</head>
+
+<body>
+<div class="card">
+<h2>Water Calculator</h2>
+
+<input id="kg" placeholder="kg">
+<input id="lb" placeholder="lb">
+<button onclick="kgToLb()">kg → lb</button>
+<button class="outline" onclick="lbToKg()">lb → kg</button>
+
+<hr>
+
+<button onclick="toggleUnit()">Toggle °F / °C</button>
+
+<input id="ddt" placeholder="DDT">
+<input id="flour" placeholder="Flour">
+<input id="room" placeholder="Room">
+<input id="friction" placeholder="Friction">
+<input id="pref" placeholder="Preferment (optional)">
+
+<button onclick="calcTemp()">Calculate</button>
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+let unit="F";
+const KG_TO_LB=2.20462;
+
+function kgToLb(){
+ let v=parseFloat(kg.value);
+ lb.value=(v*KG_TO_LB).toFixed(2);
+}
+function lbToKg(){
+ let v=parseFloat(lb.value);
+ kg.value=(v/KG_TO_LB).toFixed(2);
+}
+
+function cToF(c){return (c*9/5)+32;}
+function fToC(f){return (f-32)*5/9;}
+
+function calcTemp(){
+ let f=parseFloat(flour.value);
+ let r=parseFloat(room.value);
+ let fr=parseFloat(friction.value);
+ let d=parseFloat(ddt.value);
+ let pVal=pref.value;
+ let p=pVal?parseFloat(pVal):0;
+
+ if(unit==="C"){
+  f=cToF(f); r=cToF(r); fr=cToF(fr); d=cToF(d);
+  if(pVal) p=cToF(p);
+ }
+
+ let factors=pVal?4:3;
+ let result=(d*factors)-(f+r+fr+p);
+ let final=unit==="C"?fToC(result):result;
+
+ resultEl.innerText="Water Temp: "+final.toFixed(1)+"°"+unit;
+}
+
+function toggleUnit(){
+ unit=unit==="F"?"C":"F";
+ resultEl.innerText="";
+}
+</script>
+
+</body>
+</html>
